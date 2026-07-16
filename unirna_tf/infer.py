@@ -1,7 +1,7 @@
 import argparse
 import os
 import tempfile
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 
 import ray
 import torch
@@ -13,6 +13,35 @@ from tqdm import tqdm
 from transformers import AutoTokenizer
 
 from unirna_tf import UniRNAModels
+
+FASTA_SUFFIXES = {".fa", ".fas", ".fasta", ".fna"}
+
+
+def discover_fasta_paths(fasta_path) -> List[str]:
+    """Return sorted regular FASTA files from a file or directory input."""
+    input_path = os.fspath(fasta_path)
+    if os.path.isfile(input_path):
+        if os.path.splitext(input_path)[1].lower() not in FASTA_SUFFIXES:
+            raise ValueError(f"Expected a FASTA file, got: {input_path}")
+        return [input_path]
+
+    if not os.path.isdir(input_path):
+        raise FileNotFoundError(f"FASTA input does not exist: {input_path}")
+
+    file_paths = sorted(
+        os.path.join(input_path, file_name)
+        for file_name in os.listdir(input_path)
+        if os.path.isfile(os.path.join(input_path, file_name))
+        and os.path.splitext(file_name)[1].lower() in FASTA_SUFFIXES
+    )
+    if not file_paths:
+        raise FileNotFoundError(f"No FASTA files found in: {input_path}")
+    return file_paths
+
+
+def output_path_for_fasta(output_dir, fasta_path) -> str:
+    """Generate a collision-free embedding output path for one FASTA input."""
+    return os.path.join(os.fspath(output_dir), f"{os.path.basename(os.fspath(fasta_path))}.pt")
 
 
 def prepare_seq(fasta_path):
@@ -69,7 +98,7 @@ def add_data_args(parser: argparse.ArgumentParser) -> None:
         "-fp",
         type=str,
         required=True,
-        help="Path to the fasta file containing the sequences.",
+        help="Path to a FASTA file or a directory containing FASTA files.",
     )
     parser.add_argument(
         "--output_dir",
@@ -166,7 +195,7 @@ class UniRNAPredictor:
             else:
                 results.append(predictions.pooler_output.float().cpu())
 
-        torch.save(results, f"{output_dir}/{fasta_name}.pt")
+        torch.save(results, output_path_for_fasta(output_dir, fasta_path))
 
         return len(results)
 
@@ -177,9 +206,7 @@ def cli_main():
 
     start = time.time()
     args = parser_args()
-    file_paths = []
-    for file_name in os.listdir(args.fasta_path):
-        file_paths.append(os.path.join(args.fasta_path, file_name))
+    file_paths = discover_fasta_paths(args.fasta_path)
 
     num_actors = args.concurrency
 

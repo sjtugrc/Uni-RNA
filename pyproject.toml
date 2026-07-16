@@ -25,6 +25,11 @@ classifiers = [
 requires-python = ">=3"
 dynamic = ["version"]
 dependencies = [
+    "biopython",
+    "datasets",
+    "ray",
+    "torch",
+    "tqdm",
     "transformers"
 ]
 

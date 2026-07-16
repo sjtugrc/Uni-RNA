@@ -1,6 +1,6 @@
 """
-    The code is modified from the EsmModel in the transformers library.
-    Sources: https://github.com/huggingface/transformers/blob/main/src/transformers/models/esm/modeling_esm.py
+The code is modified from the EsmModel in the transformers library.
+Sources: https://github.com/huggingface/transformers/blob/main/src/transformers/models/esm/modeling_esm.py
 """
 
 from dataclasses import dataclass

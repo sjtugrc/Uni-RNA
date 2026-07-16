@@ -1,8 +1,8 @@
 # Copyright Beijing DP Technology Co.,Ltd. All rights reserved.
 
 """
-    The code is modified from the original ESM tokenizer provided by HuggingFace.
-    Sources: https://github.com/huggingface/transformers/blob/main/src/transformers/models/esm/tokenization_esm.py
+The code is modified from the original ESM tokenizer provided by HuggingFace.
+Sources: https://github.com/huggingface/transformers/blob/main/src/transformers/models/esm/tokenization_esm.py
 """
 
 import os

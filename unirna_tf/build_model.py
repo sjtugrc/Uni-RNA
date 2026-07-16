@@ -1,12 +1,14 @@
+import argparse
 import os
 import shutil
-import sys
 from collections import OrderedDict
 
 import torch
 from chanfig import NestedDict
 
 from unirna_tf.config import build_config, build_config_GENE
+
+TOKENIZER_VERSIONS = ("single", "bpe", "plant_bpe")
 
 
 def convert_ckpt(ckpt):
@@ -54,8 +56,12 @@ def convert_ckpt(ckpt):
     return weights
 
 
-def convert(path, version: int = 0, num_hidden_layers: int = 12, hidden_size: int = 768, vocab_size: int = 10):
-    ckpt = torch.load(path)
+def convert(path, version: str = "single", num_hidden_layers: int = 12, hidden_size: int = 768, vocab_size: int = 10):
+    if version not in TOKENIZER_VERSIONS:
+        raise ValueError(
+            f"Unsupported tokenizer version {version!r}; expected one of: {', '.join(TOKENIZER_VERSIONS)}."
+        )
+
     if version == "single":
         config = build_config(path)
         if os.path.exists(config._name_or_path):
@@ -71,8 +77,6 @@ def convert(path, version: int = 0, num_hidden_layers: int = 12, hidden_size: in
         if os.path.exists(config._name_or_path):
             shutil.rmtree(config._name_or_path)
         shutil.copytree(os.path.join(os.path.dirname(__file__), "tokenizer/plant_bpe"), config._name_or_path)
-    else:
-        AssertionError("Invalid version for tokenizer")
 
     config.save_pretrained(config._name_or_path)
     ckpt = torch.load(path)
@@ -85,12 +89,29 @@ def convert(path, version: int = 0, num_hidden_layers: int = 12, hidden_size: in
     torch.save(weights, os.path.join(config._name_or_path, "pytorch_model.bin"))
 
 
+def parse_args(argv=None):
+    """Parse checkpoint conversion arguments without interactive prompts."""
+    parser = argparse.ArgumentParser(description="Convert a UniRNA checkpoint to Hugging Face format.")
+    parser.add_argument("path", help="Path to the original UniRNA checkpoint.")
+    parser.add_argument(
+        "version",
+        nargs="?",
+        choices=TOKENIZER_VERSIONS,
+        default="single",
+        help="Tokenizer/checkpoint variant (default: single).",
+    )
+    parser.add_argument("--num-hidden-layers", type=int, default=12)
+    parser.add_argument("--hidden-size", type=int, default=768)
+    parser.add_argument("--vocab-size", type=int, default=10)
+    return parser.parse_args(argv)
+
+
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        convert(sys.argv[1])
-    else:
-        print("You choose GENE model. Please provide num_hidden_layers and hidden_size.")
-        num_hidden_layers = int(input("nums_layers: "))
-        hidden_size = int(input("hidden_size: "))
-        vocab_size = int(input("vocab_size: "))
-        convert(sys.argv[1], sys.argv[2], num_hidden_layers, hidden_size, vocab_size)
+    args = parse_args()
+    convert(
+        args.path,
+        args.version,
+        num_hidden_layers=args.num_hidden_layers,
+        hidden_size=args.hidden_size,
+        vocab_size=args.vocab_size,
+    )
