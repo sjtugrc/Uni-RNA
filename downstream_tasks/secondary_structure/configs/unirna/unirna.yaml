@@ -1,0 +1,97 @@
+defaults: &defaults
+  train_root: ${UR_DATA_ROOT:-data/ur_dataset}
+  train_split: train.parquet
+  validation_split: validation.parquet
+  test_split: test.parquet
+  infer:
+    - UR=${UR_TEST_FASTA:-data/benchmark/UR_test.fasta}
+  batch_size: 4
+  num_workers: 4
+  contact_head: contact.logits.pair_mlp_unet
+  logits: auto
+  threshold: 0.5
+  seed: 1016
+  precision: bf16
+  compile:
+    enabled: true
+  checkpoint:
+    keep_latest_k: 5
+    interval: 1
+
+  score:
+    split: validation
+    metric: loss
+    patience: 10
+base: &base
+  <<: *defaults
+  lr: 3e-4
+  weight_decay: 0.01
+  pretrained_ratio: 0.1
+  epochs: 50
+
+models:
+  aido_rna:
+    <<: *base
+    model: aido_rna
+    pretrained: ${RNA_WEIGHTS_ROOT:-weights}/aido_rna
+    encoder: aido_rna
+    trust_remote_code: true
+
+  rinalmo:
+    <<: *base
+    model: rinalmo
+    pretrained: ${RNA_WEIGHTS_ROOT:-weights}/rinalmo
+    encoder: auto
+
+  rnabert:
+    <<: *base
+    model: rnabert
+    pretrained: ${RNA_WEIGHTS_ROOT:-weights}/rnabert
+    encoder: auto
+    max_seq_length: 438
+
+  rnaernie:
+    <<: *base
+    model: rnaernie
+    pretrained: ${RNA_WEIGHTS_ROOT:-weights}/rnaernie
+    encoder: auto
+    max_seq_length: 511
+
+  rnafm:
+    <<: *base
+    model: rnafm
+    pretrained: ${RNA_WEIGHTS_ROOT:-weights}/rnafm
+    encoder: auto
+    max_seq_length: 1024
+
+  rnamsm:
+    <<: *base
+    model: rnamsm
+    pretrained: ${RNA_WEIGHTS_ROOT:-weights}/rnamsm
+    encoder: auto
+    max_seq_length: 1022
+
+  rnaret:
+    <<: *base
+    model: rnaret
+    pretrained: ${RNA_WEIGHTS_ROOT:-weights}/rnaret
+    encoder: rnaret
+    rnaret_k: 1
+    compile:
+      enabled: false
+
+  unirna:
+    <<: *base
+    model: unirna
+    pretrained: ${RNA_WEIGHTS_ROOT:-weights}/UniRNA-L16
+    encoder: unirna
+    encoder_hidden_size: 1024
+
+
+  onehot:
+    <<: *base
+    model: onehot
+    pretrained: null
+    encoder: onehot
+    head:
+      pair_hidden_size: 128

@@ -1,0 +1,12 @@
+# Direct runtime versions observed in the training environment; this is not a full transitive lock.
+transformers==5.8.1
+chanfig==0.0.115
+datasets==4.8.5
+numpy==2.4.5
+pandas==3.0.3
+PyYAML==6.0.3
+pyarrow==22.0.0
+safetensors==0.7.0
+biopython==1.87
+fairscale==0.4.0
+torchscale==0.3.0
