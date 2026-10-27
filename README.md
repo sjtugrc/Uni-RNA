@@ -33,7 +33,7 @@ pip install -e .
 
 We provide jupyter notebook to demonstrate how to use the pretrained model. You can find the notebook in the `examples` directory.
 
-For model weights, please download from [Hugging face](https://huggingface.co/pkugrc/Uni-RNA) `resource/pretrain-weights`
+For model weights, please download from [Hugging face](https://huggingface.co/pkugrc/Uni-RNA) `resource/pretrain-weights/weights`
 
 
 ### Quick Start
