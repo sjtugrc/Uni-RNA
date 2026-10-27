@@ -2,8 +2,7 @@
 
 [![Python](https://img.shields.io/badge/python-3.10-blue)](https://www.python.org/)
 [![License: CC BY-NC 4.0](https://img.shields.io/badge/license-CC%20BY--NC%204.0-lightgrey)](LICENSE)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/a7fd7143501741b489ea2123a6ce3a50)](https://app.codacy.com/gh/ComDec/unirna_tf/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
-[![Codacy - Coverage](https://app.codacy.com/project/badge/Coverage/ad5fd8904c2e426bb0a865a9160d6c69)](https://app.codacy.com/gh/ComDec/unirna_tf/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
+
 
 The Hugging Face compatible version of Uni-RNA, which is designed to be more efficient and easier to use.
 
@@ -34,8 +33,7 @@ pip install -e .
 
 We provide jupyter notebook to demonstrate how to use the pretrained model. You can find the notebook in the `examples` directory.
 
-For model weights, please download from [Google Drive](https://drive.google.com/file/d/1zzxQa4LHCOHR9GS4MQJ4uFNtMgJsPbuv/view?usp=drive_link) and copy to the root directory of the project, then run:
-`tar -zxvf weights.tar.gz`. You will find the model weights is stored in the `weights` directory.
+For model weights, please download from [Hugging face](https://huggingface.co/pkugrc/Uni-RNA) `resource/pretrain-weights`
 
 
 ### Quick Start
@@ -78,9 +76,13 @@ python unirna_tf/infer.py --fasta_path example/fasta --output_dir example/output
 ```
 The `--concurrency` is the number of threads you want to use, corresponds to the number of GPUs you want to use. The `--batch_size` is the batch size for each thread, depending on the GPU RAM size of your machine. The `--pretrained_path` is the path to the pretrained model.
 
-
 #### Finetune Uni-RNA
 See `unirna_tf/example/finetune_via_transformers.ipynb` for usage examples
+
+## Downstream tasks
+The code for the downstream tasks described in this manuscript is available in the `downstream_tasks` directory, with implementation details provided in the corresponding sections. 
+
+The test dataset and model weight for each task are available in the `resource/data` and `resource/weights` directories on [Hugging Face](https://huggingface.co/pkugrc/Uni-RNA).
 
 ## Acknowledgments
 Commercial inquiries, please contact [wenh@aisi.ac.cn](mailto:wenh@aisi.ac.cn)
