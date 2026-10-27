@@ -1,0 +1,19 @@
+mode: infer
+task_type: reg
+
+gpu: 0
+seed: 0
+
+features_mode: cls_token
+
+base_model_name: Uni-RNA
+
+infer_csv_path: /path/to/3utr/isoform/held_out.csv
+saved_model_path: /path/to/your/checkpoint
+
+seq_column_name: seq
+label_column_name_list:
+  - label
+do_norm: false
+
+batch_size: 512

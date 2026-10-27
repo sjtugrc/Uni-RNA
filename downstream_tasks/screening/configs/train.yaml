@@ -1,0 +1,20 @@
+# Uni-RNA screening task configuration.
+# Scripts load this file as parser defaults; command-line arguments override it.
+
+# data and features
+data_dir: data # directory containing train.csv and test.csv
+rna_features: features/Uni-RNA.pt
+mol_features: features/unimol_embeddings_dict.pt
+output_dir: results   # reproduced runs land here; results/ holds the reference run
+
+# training configuration
+epochs: 200
+lr: 0.01
+batch_size: 256
+weight_decay: 1.0e-4
+pos_weight: 10.0
+bottleneck_dim: 8
+head_hidden_dim: 64
+dropout: 0.1
+norm_mode: separate
+seed: 42

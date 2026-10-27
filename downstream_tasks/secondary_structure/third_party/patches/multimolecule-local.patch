@@ -14,20 +14,6 @@ index 8c0fbe45e..59abbad6b 100644
  
      def forward(self, hidden_states: Tensor) -> Tensor:
          hidden_states = self.dense(hidden_states)
-diff --git a/multimolecule/modules/backbones/sequence.py b/multimolecule/modules/backbones/sequence.py
-index 15f22da52..63e9f04c0 100644
---- a/multimolecule/modules/backbones/sequence.py
-+++ b/multimolecule/modules/backbones/sequence.py
-@@ -38,6 +38,9 @@ class SequenceBackbone(nn.Module):
-         sequence_dropout = sequence.pop("dropout", 0)
-         self.sequence = SEQUENCES.build(**sequence)
-         self.dense_input = self._resolve_dense_input(dense_input)
-+        name = sequence["name"].lower()
-+        if "structrfm":
-+            self.dense_input = True
-         self.sequence_dropout = nn.Dropout(sequence_dropout)
-         self.config = self.sequence.config
-         self.out_channels = self.config.hidden_size
 diff --git a/multimolecule/runner/runner.py b/multimolecule/runner/runner.py
 index 7d8b4cce7..ca7fe343a 100644
 --- a/multimolecule/runner/runner.py

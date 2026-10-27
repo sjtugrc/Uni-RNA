@@ -543,10 +543,8 @@ def build_tokenizer(config: Config):
             config.pretrained,
             trust_remote_code=bool(config.get("trust_remote_code", False)),
         )
-        # Some tokenizers (e.g. structRFM) DEFINE cls/sep/eos but never ADD them. MM's Dataset
-        # derives `seq_length_offset` from those attributes and would trim labels for special
-        # tokens that never appear in the input (logits longer than labels). Probe the real
-        # behaviour and null the special tokens when none are added, so the offset is 0.
+        # Some tokenizers expose special-token attributes without adding those tokens.
+        # Keep the dataset length offset aligned with the tokens actually present in input_ids.
         probe = "ACGU"
         with suppress(Exception):
             if len(tokenizer(probe, add_special_tokens=True)["input_ids"]) == len(probe):

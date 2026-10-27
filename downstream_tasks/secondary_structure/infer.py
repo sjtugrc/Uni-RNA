@@ -267,9 +267,7 @@ def infer_frame(*, engine: InferenceEngine, train_script: Any, args: Any, frame:
         record_id = str(row[args.id_col])
         sequence = train_script.normalize_sequence(row[args.sequence_col])
         file_id = train_script.unique_file_stem(train_script.sanitize_name(record_id) or f"record_{idx:06d}", file_counts)
-        # Models with absolute position embeddings (e.g. structRFM) cannot encode sequences beyond
-        # their max length. Skip those entirely — write nothing — so the model is scored as a miss
-        # (0) on them rather than crashing or silently truncating the structure.
+        # Honor the configured sequence limit by skipping instead of truncating.
         if max_length is not None and len(sequence) > max_length:
             skipped += 1
             continue

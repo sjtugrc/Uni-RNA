@@ -1,0 +1,10 @@
+# Direct runtime versions observed in the training environment; this is not a full transitive lock.
+torch==2.5.0  # cu124 wheel: use --index-url https://download.pytorch.org/whl/cu124
+transformers==4.48.1
+pandas==2.2.3
+numpy==2.4.4
+scikit-learn==1.6.1
+scipy==1.15.2
+PyYAML==6.0.3
+matplotlib==3.10.0
+tqdm==4.67.3

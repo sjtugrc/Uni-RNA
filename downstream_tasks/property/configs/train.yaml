@@ -1,0 +1,22 @@
+mode: train
+task_type: reg
+
+gpu: 0
+seed: 0
+
+features_mode: cls_token
+
+train_csv_path: /path/to/train.csv
+val_csv_path: /path/to/val.csv
+infer_csv_path: /path/to/test.csv
+
+seq_column_name: sequence
+label_column_name_list:
+  - label
+do_norm: false
+
+num_epochs: 50
+batch_size: 64
+base_lr: 1e-5
+head_lr: 1e-3
+weight_decay: 0.0

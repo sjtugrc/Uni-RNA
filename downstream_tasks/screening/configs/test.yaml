@@ -1,0 +1,7 @@
+# Uni-RNA screening task: inference configuration.
+# Parser defaults for scripts/infer.py; command-line arguments override it.
+
+checkpoint: results/model.pt
+data_dir: data # directory containing train.csv and test.csv
+rna_features: features/Uni-RNA.pt
+mol_features: features/unimol_embeddings_dict.pt
